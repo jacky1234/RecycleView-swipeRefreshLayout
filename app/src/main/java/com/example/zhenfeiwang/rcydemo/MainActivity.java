@@ -52,8 +52,8 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 
     private void init() {
         data = new ArrayList<String>();
-//        layoutManager = new LinearLayoutManager(this);
-        layoutManager = new GridLayoutManager(this, 2);
+        layoutManager = new LinearLayoutManager(this);
+//        layoutManager = new GridLayoutManager(this, 2);
         refreshLayout.setOnRefreshListener(this);
         rv.setLayoutManager(layoutManager);
         adapter = new TestAdapter(this, R.layout.item1, data, true, rv);

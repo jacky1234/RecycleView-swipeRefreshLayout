@@ -17,10 +17,15 @@ public class TestAdapter extends RcyCommonAdapter<String> {
     public TestAdapter(Context context, int layoutId, List datas , boolean loadMore, RecyclerView rv) {
         super(context, layoutId, datas, loadMore, rv);
     }
+    @Override
+    public int getmLayoutId(int position) {
+        return position % 2 == 0 ? R.layout.item1 : R.layout.item2;
+    }
 
     @Override
     public void convert(RcyViewHolder holder, String s) {
         TextView tv = holder.getView(R.id.tv);
         tv.setText(s);
     }
+
 }

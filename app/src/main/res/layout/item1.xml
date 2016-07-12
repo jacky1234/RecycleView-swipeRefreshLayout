@@ -6,8 +6,9 @@
     <TextView
         android:id="@+id/tv"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="120dp"
         android:text="的发送到发送到"
+        android:background="@mipmap/ic_launcher"
         android:textColor="#000"
         android:textSize="20sp"
         android:gravity="center"/>

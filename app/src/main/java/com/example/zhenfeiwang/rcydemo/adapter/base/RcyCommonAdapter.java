@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 
 import com.example.zhenfeiwang.rcydemo.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhenfei.wang on 2016/7/12.
@@ -18,12 +20,12 @@ import java.util.List;
  * 只支持单一布局
  */
 public abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyViewHolder>{
-    private static final int CONTENT_FOOTER = 0x222;                     // 尾部
     protected Context mContext;
     protected int mLayoutId;
     protected List<T> mDatas;
     protected LayoutInflater mInflater;
     protected boolean loadMore;
+    protected Map<Integer, Integer> map = new HashMap<>();
 
 
     public RcyCommonAdapter(Context context, int layoutId, List<T> datas , boolean loadMore,RecyclerView rv)
@@ -48,7 +50,7 @@ public abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyViewH
                 @Override
                 public int getSpanSize(int position) {
                     int type = getItemViewType(position);
-                    if (type == CONTENT_FOOTER) {
+                    if (type == R.layout.item_list_footer) {
                         return gridLayoutManager.getSpanCount();
                     } else {
                         return 1;
@@ -62,33 +64,28 @@ public abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyViewH
     @Override
     public RcyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType)
     {
-        RcyViewHolder viewHolder = null;
-        if(viewType == CONTENT_FOOTER){
-             viewHolder = RcyViewHolder.get(mContext, parent, R.layout.item_list_footer);
-        }else {
-             viewHolder = RcyViewHolder.get(mContext, parent, mLayoutId);
-        }
-        return viewHolder;
+        return RcyViewHolder.get(mContext, parent, viewType);
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(loadMore){
-            if(position + 1 == getItemCount()){
-                return CONTENT_FOOTER;
-            }
+        int lId = 0;
+        if(loadMore && position + 1 == getItemCount()){
+            lId = R.layout.item_list_footer;
+        } else {
+            lId = getmLayoutId(position);
         }
-        return super.getItemViewType(position);
+        return lId;
     }
 
     @Override
     public void onBindViewHolder(RcyViewHolder holder, int position)
     {
-            if(position + 1 == getItemCount() && loadMore){
-                checkLoadStatus(holder);
-            }else {
-                 convert(holder, mDatas.get(position));
-             }
+        if(getItemViewType(position)  == R.layout.item_list_footer){
+            checkLoadStatus(holder);
+        }else {
+            convert(holder, mDatas.get(position));
+        }
     }
 
     private void checkLoadStatus(RcyViewHolder holder) {
@@ -103,10 +100,11 @@ public abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyViewH
 
 
     public abstract void convert(RcyViewHolder holder, T t);
+    public abstract int getmLayoutId(int position);
 
     @Override
     public int getItemCount()
     {
-        return loadMore ? mDatas.size() + 1 : mDatas.size();
+        return  loadMore ? mDatas.size() + 1 : mDatas.size();
     }
 }
