@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.zhenfeiwang.rcydemo.R;
+import com.example.zhenfeiwang.rcydemo.adapter.IPisotion;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,20 +20,24 @@ import java.util.Map;
  * recycleview 通用的Adapter
  * 只支持单一布局
  */
-public abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyViewHolder>{
+public  abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyViewHolder> implements IPisotion{
     protected Context mContext;
-    protected int mLayoutId;
     protected List<T> mDatas;
     protected LayoutInflater mInflater;
     protected boolean loadMore;
-    protected Map<Integer, Integer> map = new HashMap<>();
 
 
-    public RcyCommonAdapter(Context context, int layoutId, List<T> datas , boolean loadMore,RecyclerView rv)
+    /**
+     *
+     * @param context
+     * @param datas
+     * @param loadMore 是否需要底部加载更多
+     * @param rv
+     */
+    public RcyCommonAdapter(Context context, List<T> datas , boolean loadMore,RecyclerView rv)
     {
         mContext = context;
         mInflater = LayoutInflater.from(context);
-        mLayoutId = layoutId;
         mDatas = datas;
         this.loadMore = loadMore;
         setSpanCount(rv);
@@ -50,6 +55,7 @@ public abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyViewH
                 @Override
                 public int getSpanSize(int position) {
                     int type = getItemViewType(position);
+                    // 若是最后一个 且需要加载更多，则强制让最后一个条目占满横屏
                     if (type == R.layout.item_list_footer) {
                         return gridLayoutManager.getSpanCount();
                     } else {
@@ -64,7 +70,7 @@ public abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyViewH
     @Override
     public RcyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType)
     {
-        return RcyViewHolder.get(mContext, parent, viewType);
+        return RcyViewHolder.get(mContext, parent, viewType, this);
     }
 
     @Override
@@ -101,10 +107,18 @@ public abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyViewH
 
     public abstract void convert(RcyViewHolder holder, T t);
     public abstract int getmLayoutId(int position);
+    public abstract void onItemClickListener(int position);
 
     @Override
     public int getItemCount()
     {
         return  loadMore ? mDatas.size() + 1 : mDatas.size();
+    }
+
+    @Override
+    public void clickPosition(int position) {
+        if(getItemViewType(position)  != R.layout.item_list_footer){
+            onItemClickListener(position);
+        }
     }
 }

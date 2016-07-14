@@ -7,29 +7,33 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.zhenfeiwang.rcydemo.adapter.IPisotion;
+
 /**
  * Created by zhenfei.wang on 2016/7/12.
  * recycleview的通用ViewHolder
  */
-public class RcyViewHolder extends RecyclerView.ViewHolder{
+public class RcyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
     private SparseArray<View> mViews;
     private View mConvertView;
     private Context mContext;
-
-    public RcyViewHolder(Context context, View itemView, ViewGroup parent)
+    private IPisotion iP;
+    public RcyViewHolder(Context context, View itemView, ViewGroup parent, IPisotion i)
     {
         super(itemView);
         mContext = context;
         mConvertView = itemView;
         mViews = new SparseArray<View>();
+        iP = i;
+        mConvertView.setOnClickListener(this);
     }
 
 
-    public static RcyViewHolder get(Context context, ViewGroup parent, int layoutId)
+    public static RcyViewHolder get(Context context, ViewGroup parent, int layoutId, IPisotion i)
     {
         View itemView = LayoutInflater.from(context).inflate(layoutId, parent,
                 false);
-        RcyViewHolder holder = new RcyViewHolder(context, itemView, parent);
+        RcyViewHolder holder = new RcyViewHolder(context, itemView, parent, i);
         return holder;
     }
 
@@ -51,12 +55,10 @@ public class RcyViewHolder extends RecyclerView.ViewHolder{
         return (T) view;
     }
 
-
-    public RcyViewHolder setOnClickListener(int viewId,
-                                         View.OnClickListener listener)
-    {
-        View view = getView(viewId);
-        view.setOnClickListener(listener);
-        return this;
+    @Override
+    public void onClick(View view) {
+        if(iP != null){
+            iP.clickPosition(getAdapterPosition());
+        }
     }
 }

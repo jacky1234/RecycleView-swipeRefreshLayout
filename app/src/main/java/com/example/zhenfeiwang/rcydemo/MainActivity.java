@@ -1,6 +1,7 @@
 package com.example.zhenfeiwang.rcydemo;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,9 +10,15 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.example.zhenfeiwang.rcydemo.adapter.TestAdapter;
 
+import junit.runner.Version;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +63,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
 //        layoutManager = new GridLayoutManager(this, 2);
         refreshLayout.setOnRefreshListener(this);
         rv.setLayoutManager(layoutManager);
-        adapter = new TestAdapter(this, R.layout.item1, data, true, rv);
+        adapter = new TestAdapter(this, data, true, rv);
         rv.addOnScrollListener(new OnRecyclerScrollListener(adapter, refreshLayout, layoutManager) {
             @Override
             public void loadMore() {
