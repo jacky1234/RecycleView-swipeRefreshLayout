@@ -1,5 +1,6 @@
 package com.example.zhenfeiwang.rcydemo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,10 +8,13 @@ import java.util.List;
  */
 public class Utils {
 
-    public static void loadMore(List<String> list){
+    private static int time = 3;
+    public static List<String> loadMore(){
+        List<String> s = new ArrayList<>();
         for(int i = 0 ; i < 5 ; i++){
-            list.add(i + "-->" + System.currentTimeMillis());
+            s.add(i + "-->" + System.currentTimeMillis());
         }
+        return time-- == 0 ? null : s;
     }
 
 

@@ -39,7 +39,7 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
                     refreshLayout.setRefreshing(false);
                     break;
                 case 1:
-                    Utils.loadMore(data);
+                    adapter.loadMore(Utils.loadMore());
                     adapter.notifyDataSetChanged();
                     break;
                 default:
@@ -67,7 +67,9 @@ public class MainActivity extends Activity implements SwipeRefreshLayout.OnRefre
         rv.addOnScrollListener(new OnRecyclerScrollListener(adapter, refreshLayout, layoutManager) {
             @Override
             public void loadMore() {
-                handler.sendEmptyMessageDelayed(1, 2000);
+                if (!adapter.isLoadFinish()) {
+                    handler.sendEmptyMessageDelayed(1, 2000);
+                }
             }
         });
         rv.setAdapter(adapter);

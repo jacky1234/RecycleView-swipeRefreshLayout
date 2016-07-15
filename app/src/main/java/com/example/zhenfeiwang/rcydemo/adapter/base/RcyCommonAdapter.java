@@ -7,6 +7,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.zhenfeiwang.rcydemo.R;
 import com.example.zhenfeiwang.rcydemo.adapter.IPisotion;
@@ -25,7 +26,7 @@ public  abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyView
     protected List<T> mDatas;
     protected LayoutInflater mInflater;
     protected boolean loadMore;
-
+    protected boolean loadFinish; // 加载完成
 
     /**
      *
@@ -65,7 +66,24 @@ public  abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyView
             });
         }
     }
+    /**
+     * 加载更多
+     * @param datas
+     */
+    public void loadMore(List<T> datas){
+        if(loadMore && !loadFinish){
+            if(datas == null || datas.size() == 0){ // 结束标志
+                loadFinish = true;
+            }else {
+                mDatas.addAll(datas);
+            }
+            notifyDataSetChanged();
+        }
+    }
 
+    public boolean isLoadFinish() {
+        return loadFinish;
+    }
 
     @Override
     public RcyViewHolder onCreateViewHolder(final ViewGroup parent, int viewType)
@@ -95,12 +113,23 @@ public  abstract class RcyCommonAdapter <T> extends RecyclerView.Adapter<RcyView
     }
 
     private void checkLoadStatus(RcyViewHolder holder) {
-        if(getItemCount() != 1){
+        TextView tv = holder.getView(R.id.tv_item_footer_load_more);
+        if(loadFinish){
+            tv.setText("全部加载完成");
+            tv.setVisibility(View.VISIBLE);
+            holder.getView(R.id.pb_item_footer_loading).setVisibility(View.GONE);
+        }else if(getItemCount() != 1){
              holder.getView(R.id.tv_item_footer_load_more).setVisibility(View.GONE);
              holder.getView(R.id.pb_item_footer_loading).setVisibility(View.VISIBLE);
         }else {
-            holder.getView(R.id.tv_item_footer_load_more).setVisibility(View.GONE);
-            holder.getView(R.id.pb_item_footer_loading).setVisibility(View.GONE);
+            if(getItemCount() != 1){
+                tv.setText("上拉加载更多");
+                tv.setVisibility(View.VISIBLE);
+                holder.getView(R.id.pb_item_footer_loading).setVisibility(View.GONE);
+            }else {
+                tv.setVisibility(View.GONE);
+                holder.getView(R.id.pb_item_footer_loading).setVisibility(View.GONE);
+            }
         }
     }
 
